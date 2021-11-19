@@ -36,12 +36,15 @@ exports.updatePhotos =(req,res) => {
     .catch(err => console.log(err))
 };
 
-exports.getLikes = (req,res) => {
+exports.getLikes = (req, res) => {
   Trip.findById(req.params.tripId)
     .populate('likes', 'username dp _id fullname followers')
     .exec()
     .then(likes => {
-      if(likes) {res.json({likes})}
+      if(likes) {
+        console.log('hereererere')
+        res.json({likes})
+      }
       else {res.status(422).json({error:"no one likes you"})}
     })
     .catch(error => console.log(error))
