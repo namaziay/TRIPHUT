@@ -33,7 +33,7 @@ trips: [{
   type: ObjectId,
   ref: "Trip"
 }]
-})
+});
 
 const User = mongoose.model('User', UserSchema);
 

@@ -1,7 +1,7 @@
 const User = require('../Models/UserModel');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const secretKey = 'SHHH this is a secret'
+const secretKey = 'SHHH this is a secret';
 
 exports.getUser = (req,res) => {
   User.findOne({username:req.params.username})
@@ -15,13 +15,13 @@ exports.getUser = (req,res) => {
     res.json({user: result})
   })
   .catch(err => res.status(400).json({error:err}));
-}
+};
 
 exports.updateUser = (req,res) => {
   const { username, email, fullname } = req.body.data;
   if (!email || !username || !fullname) {
     return res.status(422).json({ error: "PLease enter all fields." })
-  }
+  };
 
   User.updateOne({ _id: req.body.id }, { username, email, fullname })
     .exec()
@@ -39,10 +39,10 @@ exports.updateUser = (req,res) => {
             } 
           })
           .catch(er => console.log(er))
-      }
+      };
     })
     .catch(er => console.log(er));
-}
+};
 
 exports.updateProfilePhoto = (req,res) => {
   User.findOne({ username: req.body.username })
@@ -53,16 +53,16 @@ exports.updateProfilePhoto = (req,res) => {
       User.updateOne({ username: req.body.username }, { dp: req.body.dp }).exec();
       foundUser.dp = req.body.dp;
       res.json({ user: foundUser })
-    }
+    };
   })
   .catch(er => console.log(er));
-}
+};
 
 exports.registerUser = (req,res) => {
   const { username, email, password, fullname } = req.body;
     if (!email || !username || !password || !fullname) {
       return res.status(422).json({ error: "PLease enter all fields." })
-    }
+    };
     
   User.findOne({ email: email })
     .then((foundUser) => {
@@ -84,14 +84,15 @@ exports.registerUser = (req,res) => {
           .catch(err => console.log(err));
       })
     })
-    .catch(err => console.log(err))
-}
+    .catch(err => console.log(err));
+};
 
 exports.signIn = (req,res) => {
   const { email, password } = req.body;
   if (!email || !password) {
       return res.status(422).json({ error: "Please enter all fields." })
-  }
+  };
+
   User.findOne({ email: email })
     .populate("trips", "url _id description postedDate")
     .exec()
@@ -111,7 +112,7 @@ exports.signIn = (req,res) => {
         .catch(err => console.log(err));
     })
     .catch(err => console.log(err));
-}
+};
 
 exports.getFollows = (req, res)=> {
   User.findById(req.params.userId, req.params.task)
@@ -124,8 +125,8 @@ exports.getFollows = (req, res)=> {
         res.status(422).json({ error: "wrong task" });
       }
     })
-    .catch(er => console.log(er))
-}
+    .catch(er => console.log(er));
+};
 
 exports.pushFollows = (req,res) => {
   User.findOne({ username: req.params.username })
@@ -144,4 +145,4 @@ exports.pushFollows = (req,res) => {
   })
   .catch(er => console.log(er));
 res.json({ message: "task completed." });
-}
+};

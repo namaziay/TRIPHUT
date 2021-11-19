@@ -8,6 +8,6 @@ mongoose.connect('mongodb+srv://marshal:mongo@cluster0.8o9m6.mongodb.net/chat_db
 })
 .catch((e)=>{
   console.log(e);
-})
+});
 
 module.exports = mongoose;

@@ -9,7 +9,7 @@ exports.getAllTrips = (req, res)=> {
       res.status(200).json({ trips })
     })
     .catch(err => console.log(err));
-}
+};
 
 exports.updateLikes = (req, res) => {
   const { tripId } = req.body;
@@ -23,7 +23,7 @@ exports.updateLikes = (req, res) => {
       res.json({message:'Task was completed'})
     })
     .catch(err => console.log(err))
-}
+};
 
 exports.updatePhotos =(req,res) => {
   const {tripId} = req.body;
@@ -34,7 +34,7 @@ exports.updatePhotos =(req,res) => {
       res.json({trip:photo})
     })
     .catch(err => console.log(err))
-}
+};
 
 exports.getLikes = (req,res) => {
   Trip.findById(req.params.tripId)
@@ -45,7 +45,7 @@ exports.getLikes = (req,res) => {
       else {res.status(422).json({error:"no one likes you"})}
     })
     .catch(error => console.log(error))
-}
+};
 
 exports.createTrip = (req,res)=> {
   const {description, url , travelDate, title} = req.body;
@@ -63,7 +63,7 @@ exports.createTrip = (req,res)=> {
       res.json({post:response, message: 'Trip was successfully created'})
     })
     .catch(err => console.log(err))
-}
+};
 
 
 exports.deleteTrip = (req,res)=> {
@@ -72,7 +72,7 @@ exports.deleteTrip = (req,res)=> {
     res.status(200).json({response})
   })
   .catch(err => res.status(400).json({error: err, message:"Could not delete trip"}))
-}
+};
 
 exports.getTripByUser =(req,res) => {
   Trip.find({postedBy:req.params.id})
@@ -88,7 +88,7 @@ exports.getTripByUser =(req,res) => {
       console.log(err)
       res.status(400).json({err})
     })
-}
+};
 
 
 exports.getTrip =(req,res) => {
@@ -103,4 +103,4 @@ exports.getTrip =(req,res) => {
     console.log(err)
     res.status(400).json({err})
   })
-}
+};
