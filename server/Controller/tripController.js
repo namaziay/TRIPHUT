@@ -42,10 +42,15 @@ exports.getLikes = (req, res) => {
     .populate('likes', 'username dp _id fullname followers')
     .exec()
     .then(likes => {
+<<<<<<< HEAD
       if(likes) {
         console.log('hereererere')
         res.json({likes})
       }
+=======
+      
+      if(likes) {res.json({likes})}
+>>>>>>> 9e78cecf527e5bef0f983fa6ba82923f6f6979e3
       else {res.status(422).json({error:"no one likes you"})}
     })
     .catch(error => console.log(error))
@@ -95,14 +100,15 @@ exports.getTripByUser =(req,res) => {
 };
 
 
-exports.getTrip =(req,res) => {
-    Trip.find({_id:req.params.id})
-      .populate("postedBy", "_id username")
-      .exec()
-      .then (trip => {
-        if(trip) {res.status(200).json({trip})}
-        else{res.status(422).json({error:"Error getting user trips"})}
-      })
+exports.getTrip =(req, res) => {
+  const {postId}  = req.body
+  Trip.find({ _id: postId})
+    .populate("postedBy", "_id username")
+    .exec()
+    .then (trip => {
+      if(trip) {res.status(200).json({trip})}
+      else{res.status(422).json({error:"Error getting user trips"})}
+    })
   .catch (err => {
     console.log(err)
     res.status(400).json({err})

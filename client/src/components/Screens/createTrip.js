@@ -5,16 +5,14 @@ import { update_hPosts } from "../../Redux/Actions/action"
 import ReactCrop from "react-image-crop"
 import "react-image-crop/dist/ReactCrop.css"
 import { storage } from "../../firebase/index"
+import APIService from '../../apiService'
 import {
   ref,
-  uploadString,
-  uploadBytes,
   getDownloadURL,
   uploadBytesResumable,
 } from "firebase/storage"
 
 const CreateTrip = () => {
-  const user = useSelector((state) => state.loggedUser)
   const isAuth = useSelector((state) => state.isLogged)
   const dispatch = useDispatch()
   const [trip, setTrip] = useState({
@@ -27,30 +25,8 @@ const CreateTrip = () => {
   const [send, setSend] = useState(false)
   const [imgUrl, seturl] = useState("")
   const { file, description, title, url } = trip
-  const [image, setImage] = useState(null)
   const [crop, setCrop] = useState({ x: 0, y: 30, width: 100 })
 
-  function getCroppedImage(image, crop) {
-    const canvas = document.createElement("canvas")
-    const scaleX = image.naturalWidth / image.width
-    const scaleY = image.naturalHeight / image.height
-    canvas.width = crop.width
-    canvas.height = crop.height
-    const ctx = canvas.getContext("2d")
-
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height
-    )
-    return canvas.toDataURL("image/png")
-  }
 
   const onChangeHandler = (event) => {
     if (event.target.name === "description") {
@@ -78,7 +54,7 @@ const CreateTrip = () => {
 
   const handleForm = (event) => {
     event.preventDefault()
-    const file = getCroppedImage(image, crop)
+    //const file = getCroppedImage(image, crop)
     const name = trip.url.name.replace(".", "")
     console.log(trip.url, "From TripSide")
     const storageRef = ref(storage, `images/${name}`)
@@ -104,32 +80,24 @@ const CreateTrip = () => {
   }
 
   useEffect(() => {
-    if (send) {
-      fetch("http://localhost:3001/createtrip", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + localStorage.getItem("jwt"),
-        },
-        body: JSON.stringify({
-          url: url,
-          description: description,
-          title: title,
-        }),
-      })
-        .then((resp) => resp.json())
-        .then((result) => {
-          dispatch(update_hPosts(result.post))
-          if (result.error) {
-            M.toast({ html: result.error, classes: "red darken-1" })
-          } else {
-            setTrip({ title: "", description: "", url: "", file: null })
-            setSend((prev) => !prev)
-            M.toast({ html: result.message, classes: "blue darken-1" })
-          }
-        })
-        .catch((err) => console.log(err))
+
+    async function sendTrip (url, description, title) {
+      const result = await APIService.CreateTrip(url, description, title)
+      return result;
     }
+
+    if (send) {
+      const result = sendTrip(url, description, title)
+        dispatch(update_hPosts(result.post))
+        if (result.error) {
+          M.toast({ html: result.error, classes: "red darken-1" })
+        } else {
+          setTrip({ title: "", description: "", url: "", file: null })
+          setSend((prev) => !prev)
+          M.toast({ html: result.message, classes: "blue darken-1" })
+        }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [send, imgUrl])
 
   return (
@@ -159,7 +127,6 @@ const CreateTrip = () => {
               <div>
                 <ReactCrop
                   width="100%"
-                  onImageLoaded={setImage}
                   src={file}
                   crop={crop}
                   keepSelection="true"

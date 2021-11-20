@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -7,7 +7,7 @@ import {
   set_loggedUser,
   unset_loggedUser,
 } from "../Redux/Actions/action"
-import { Route, Routes, Switch } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import Login from "../components/Screens/login"
 import Signup from "../components/Screens/signup"
 import Home from "../components/Screens/Home"
@@ -18,24 +18,19 @@ import ProfilePhoto from "../components/subcomponents/profilePhoto"
 import TripPage from "../components/Screens/tripPage"
 import AddPhoto from "../components/subcomponents/addPhoto"
 import VideoChat from "./Screens/videoChatApp"
+import APIService from "../apiService"
 
 const Routing = () => {
+  const [token] = useState(localStorage.getItem("jwt"))
   const isAuth = useSelector((state) => state.isLogged)
-  const loggedUser = useSelector((state) => state.loggedUser)
+  //const loggedUser = useSelector((state) => state.loggedUser)
   const isUpdate = useSelector((state) => state.isUpdate)
   const dispatch = useDispatch()
 
   useEffect(() => {
     //using unstable batch updates so that the setstate functions dont trigger useEffect again and again
     ReactDOM.unstable_batchedUpdates(() => {
-      fetch("http://localhost:3001", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + localStorage.getItem("jwt"),
-        },
-      })
-        .then((data) => data.json())
+      APIService.authenticate(token)
         .then((data) => {
           if (data.isLogged) {
             // setting user data to set_isloggedUser state
@@ -53,8 +48,6 @@ const Routing = () => {
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUpdate])
-
-  //console.log(isAuth, loggedUser)
 
   return (
     <Routes>

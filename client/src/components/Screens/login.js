@@ -3,6 +3,7 @@ import M from "materialize-css";
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import {set_islogged, set_loggedUser} from '../../Redux/Actions/action'
+import APIService from '../../apiService'
 
 const Login = () => {
 const [formData,setFormData] = useState({email:"",password:""})
@@ -18,42 +19,22 @@ const handleFormData = (event) => {
   setFormData((prevState)=>{
     return {...prevState,[name]:value}
   })
-  console.log(email,password)
-
 }
 
 const handleSubmit = async (event) => {
+  event.preventDefault()
   try{
-    event.preventDefault()
-    if(email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) && password.length >5){
-  
-      const response = await fetch('http://localhost:3001/signin',{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body:JSON.stringify({
-          email,
-          password
-        })
-      })
-  
-      const data = await response.json();
-      console.log("here is the token: " + data.token)
-      if(data.error){
-        M.toast({ html: data.error, classes: "red darken-1" })
-      }
-      else{
-        setFormData({email:"",password:""});
-        localStorage.setItem('jwt',data.token)
-        dispatch(set_loggedUser(data.user))
-        dispatch(set_islogged());
-        navigate("/");
-                          
-        M.toast({ html: data.message, classes: "blue darken-1" })
-      }
-    }else{
-      M.toast({ html: "Invalid email or other fields<br>Please check your inputs again.", classes: "red darken-1" })
+    const data = await APIService.signIn(email, password)
+    if(data.error){
+      M.toast({ html: data.error, classes: "red darken-1" })
+    }
+    else{
+      setFormData({email:"",password:""});
+      localStorage.setItem('jwt',data.token)
+      dispatch(set_loggedUser(data.user))
+      dispatch(set_islogged());
+      navigate("/");
+      M.toast({ html: data.message, classes: "blue darken-1" })
     }
   }catch(error){
     console.log(error)
@@ -63,30 +44,30 @@ const handleSubmit = async (event) => {
 useEffect(()=>{
 isAuth ? navigate('/signup') : setDisplay(true)
 
-},[isAuth])
+},[isAuth, navigate])
 
   return(
     display && <>
-            <form method="post" className="card card-login" onSubmit ={handleSubmit}>
-                <h2 className="insta-font">TripHut</h2>
-                <input type="email" autoComplete="off"
-                    name="email" value ={email} placeholder="Email" required onChange ={handleFormData}
-                />
-                <input type="password" name="password" required minLength="6"
-                    placeholder="Password" onChange ={handleFormData} value ={password} />
-                <br />
-                <button className="btn blue insta-btn">
-                    Log In
-            </button>
-                <div className="or-container">
-                    <hr />OR<hr />
-                </div>
-                <br />
-                {/* <Link className="blue-text  text-darken-4" to="/">forgot password ?</Link> */}
-                <br/>
-                <Link className="btn signup" to="/signup"> Sign up</Link>
-            </form>
-        </>
+      <form method="post" className="card card-login" onSubmit ={handleSubmit}>
+        <h2 className="insta-font">TripHut</h2>
+        <input type="email" autoComplete="off"
+          name="email" value ={email} placeholder="Email" required onChange ={handleFormData}
+        />
+        <input type="password" name="password" required minLength="6"
+          placeholder="Password" onChange ={handleFormData} value ={password} />
+        <br />
+        <button className="btn blue insta-btn">
+          Log In
+      </button>
+        <div className="or-container">
+          <hr />OR<hr />
+        </div>
+        <br />
+        {/* <Link className="blue-text  text-darken-4" to="/">forgot password ?</Link> */}
+        <br/>
+        <Link className="btn signup" to="/signup"> Sign up</Link>
+      </form>
+    </>
   )
 }
 

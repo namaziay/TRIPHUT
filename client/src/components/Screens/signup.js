@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import M from "materialize-css";
+import APIService from '../../apiService';
 
 const Signup = ()=>{
 const navigate = useNavigate()
@@ -10,7 +11,7 @@ const {email,username,password,fullname} = formData;
 const signupHandler = (e)=> {
   const name = e.target.name;
   const value = e.target.value;
-  setFormData((prevState)=>{
+  setFormData((prevState)=> {
     return {...prevState,[name]:value}
   })
 }
@@ -18,38 +19,18 @@ const signupHandler = (e)=> {
 const submitHandler = async (event) => {
   try{
     event.preventDefault();
-    if (email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
-    && fullname.length > 3 && username.length > 3 && password.length > 5) {
-  
-      const response = await fetch('http://localhost:3001/signup', {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body:JSON.stringify({
-          email,
-          fullname,
-          password,
-          username
-        })
-      })
-      const data = await response.json();
-      if(data.error){
-        M.toast({ html: data.error, classes: "red darken-1" })
-      }
-      else{
-        setFormData({ email: "", username: "", password: "", fullname: "" });
-        navigate('/');
-        M.toast({ html: data.message, classes: "blue darken-1" })
-      }
+    const data = await APIService.createUser(email, fullname, username, password);
+    if(data.error){
+      M.toast({ html: data.error, classes: "red darken-1" })
     }
     else{
-      M.toast({ html: "Invalid email or other fields<br>Please check your inputs again.", classes: "red darken-1" })
+      setFormData({ email: "", username: "", password: "", fullname: "" });
+      navigate('/');
+      M.toast({ html: data.message, classes: "blue darken-1" })
     }
   }catch(e){
     console.log(e)
   }
-  
 }
 
   return(
