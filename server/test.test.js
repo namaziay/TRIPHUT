@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const Trip = require('./Models/TripModel')
 const databaseName = 'TripHut'
 //BeforeAll or BeforeEach
+const dbLink = 'mongodb+srv://marshal:mongo@cluster0.8o9m6.mongodb.net/chat_db?authSource=admin&replicaSet=atlas-m5opbu-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true'
 
 describe('Trip Controller', async () => { 
   
@@ -16,7 +17,6 @@ describe('Trip Controller', async () => {
   const request = supertest(app)
   
   before(async() => {
-    const dbLink = `mongodb://127.0.0.1/${databaseName}`
     await mongoose.connect(dbLink, {useNewUrlParser: true})
   })
   
@@ -48,7 +48,6 @@ describe('User Controller', async () => {
   const request = supertest(app)
   
   before(async() => {
-    const dbLink = `mongodb://127.0.0.1/${databaseName}`
     await mongoose.connect(dbLink, {useNewUrlParser: true})
   })
   

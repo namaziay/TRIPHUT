@@ -29,7 +29,7 @@ describe('Intagration tests', () => {
     const request = supertest(app);
 
     before(async () => {
-        const url = `mongodb://127.0.0.1/${databaseName}`;
+        const url = 'mongodb+srv://marshal:mongo@cluster0.8o9m6.mongodb.net/chat_db?authSource=admin&replicaSet=atlas-m5opbu-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true'
         await mongoose.connect(url, {useNewUrlParser: true});
     });
 

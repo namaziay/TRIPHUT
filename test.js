@@ -15,8 +15,7 @@ describe('Server', () => {
     app.use(express.json());
     app.use(tripRouter);
     const request = supertest(app);
-    const mockID = '61967a8166babde4eb5eeb2f';
-    const tripController = require('./server/Controller/tripController');
+    const mockTripID = '61967a8166babde4eb5eeb2f';
   
     beforeEach(async() => {
       const dbLink = `mongodb+srv://marshal:mongo@cluster0.8o9m6.mongodb.net/chat_db?authSource=admin&replicaSet=atlas-m5opbu-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true`
@@ -38,8 +37,9 @@ describe('Server', () => {
     
   
     it('/trips/:id route should return corresponding trip', (done) => {
-      request.get(`/trips/${mockID}`).then(result => {
-        assert.equal(result.body.trip[0]._id, mockID);
+      request.get(`/trips/${mockTripID}`).then(result => {|
+        console.log(result)
+        assert.equal(result.body.trip[0]._id, mockTripID);
         done();
       });
     });
@@ -52,7 +52,7 @@ describe('Server', () => {
     app.use(express.json())
     app.use(userRouter)
     const request = supertest(app)
-    const mockID = '61968e58e22942b53f4b02f4'
+    const mockUserID = '619677bf66babde4eb5eea78'
     const mockUsername = '1234';
   
     beforeEach(async() => {
@@ -64,7 +64,6 @@ describe('Server', () => {
       await mongoose.connection.close()
     })
   
-    const mockUsername = 'John'
   
     it('/user/:username route should return corresponding user', (done) => {
       request.get(`/user/${mockUsername}`).then(result => {
@@ -73,13 +72,12 @@ describe('Server', () => {
       })
     })
   
-    const userID = '61967b0fe22942b53f4b01a8'
   
     it('/:userId/:task should return an array of followers', (done) =>{
-      request.get(`/${userID}/followers`).then(result => {
-        assert.equal(result.body.followers._id, userID);
+      request.get(`/${mockUserID}/followers`).then(result => {
+        assert.equal(result.body.followers._id, mockUserID);
         assert.typeOf(result.body.followers.followers, 'array');
-        //assert.typeOf(result.body.followers.followers[0]._id, 'string');
+        assert.typeOf(result.body.followers.followers[0]._id, 'string');
         done();
       });
     });
