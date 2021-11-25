@@ -37,8 +37,7 @@ describe('Server', () => {
     
   
     it('/trips/:id route should return corresponding trip', (done) => {
-      request.get(`/trips/${mockTripID}`).then(result => {|
-        console.log(result)
+      request.get(`/trips/${mockTripID}`).then(result => {
         assert.equal(result.body.trip[0]._id, mockTripID);
         done();
       });

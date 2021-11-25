@@ -1,10 +1,8 @@
 import React, {useState,useEffect} from 'react'
-import {useParams, useNavigate} from 'react-router-dom'
-import {useSelector, useDispatch} from 'react-redux';
+import {useParams} from 'react-router-dom'
+import {useSelector} from 'react-redux';
 import CreateTrip from './createTrip';
 import Trip from '../subcomponents/Trip'
-import { set_hTrips } from "../../Redux/Actions/action";
-import ReactDOM from 'react-dom';
 import Discover from '../subcomponents/Discover';
 import APIService from '../../apiService'
 import './styles/home.css'
@@ -47,7 +45,7 @@ const Home = () => {
           <div className="homepage" style={{ position: "relative", }}>
             {(!id && !postId) && <CreateTrip />}
             { // Mapping through the post state array to display all the trips on Page.
-            followingTrips.map(trip => <Trip id={trip} key={trip} postId={trip} post={trip} />)
+            followingTrips.map(trip => <Trip id={trip} key={trip} post={trip} />)
             }
         </div>
       </div>

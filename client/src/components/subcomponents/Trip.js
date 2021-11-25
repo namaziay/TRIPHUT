@@ -23,9 +23,7 @@ const Trip = ({post}) => {
 
   const like = async() =>{
     try{
-      const response = await APIService.like(id, token);
-      
-      console.log(response)
+      await APIService.like(id, token);
       dispatch(update_data());
     }
     catch(e){

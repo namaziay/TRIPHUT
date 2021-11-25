@@ -14,7 +14,6 @@ const Followers = () => {
     useEffect(() => {
         async function receiveFollowers () {
             const fetchedUser = await APIService.getFollowers(username);
-            console.log('fetched followers', fetchedUser.followers)
             setFollowers(fetchedUser.followers);
         }
         receiveFollowers();
