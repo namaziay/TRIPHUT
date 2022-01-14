@@ -33,7 +33,7 @@ postedDate: {
   type: Date,
   default: Date.now
 }
-})
+});
 
 
 const Trip = mongoose.model('Trip', TripSchema);

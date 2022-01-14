@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const databaseName = 'TripHut'
 
-mongoose.connect('mongodb://localhost:27017/TripHut',{
+mongoose.connect(`mongodb://127.0.0.1/${databaseName}`,{
   useNewURLParser: true,
 })
 .then(()=>{
